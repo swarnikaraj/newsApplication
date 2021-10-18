@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        #search-div{margin:auto;text-align: center;}
+
+        #search-div > input{margin:auto; text-align: center; width:200px; padding:5px 20px}
+
+        #random-news{display:grid; grid-template-columns: repeat(4,20%); grid-gap:5%;margin:auto ;margin-top: 40px;}
+
+        #random-news >div img{width:300px ; height:180px; cursor: pointer;}
+        #random-news>div{border:1px solid rgb(29, 28, 28); width:365px ; height:250px; padding: 10px; text-align: center;}
+
+        h1{text-align: center;}
+
+        #searchResultBox{display: none; width:600px; height:300px; border:2px solid black; margin: auto; overflow-y: scroll; margin-top: 100px;}
+        #navbar{position: fixed; display: flex; width: 100%; top:0 ;background-color: rgb(29, 28, 28); color: white; left: 0;right: 0;}
+
+    </style>
+</head>
+<body>
+
+  <div id="navbar">
+
+ <h1> Search News</h1>
+  <div id="search-div">
+
+   <input type="text" oninput="searchnews()" id="query" onclick="appearbox()" placeholder="Search">
+
+   
+
+   </div>
+
+
+
+</div>  
+
+<div id="searchResultBox"></div>
+
+   <h1>Top news Around the world</h1>
+
+<div  id="random-news">
+
+
+
+
+
+</div>
+
+
+
+
+
+
+    <script>
+
+
+
+ async function getdata(){
+
+   res= await fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=957fbaf97c284441a1369237302cce97')
+
+   data= await res.json()
+   appendnews(data.articles)
+  
+
+ }  
+
+ getdata()
+
+let randnewsbox=document.getElementById("random-news")
+ function appendnews(newses){
+
+     
+    newses.forEach(news => {
+
+        let div=document.createElement('div')
+
+        div.onclick=function(){
+            news_single(news)
+        }
+
+        let img=document.createElement('img')
+        img.src=news.urlToImage
+
+        let p=document.createElement('p')
+
+        
+          p.innerHTML=news.title
+       
+
+          div.append(img,p)
+          randnewsbox.append(div)
+    });
+
+
+
+ }
+
+
+
+
+ function news_single(news){
+
+
+    localStorage.setItem('n_s',JSON.stringify(news))
+  
+    window.location.href='news.html'
+
+
+ }
+
+
+
+
+
+ async function searchnews(name){
+
+let newsname=document.getElementById("query").value
+
+
+res= await fetch(`https://newsapi.org/v2/everything?q=${newsname}&apiKey=957fbaf97c284441a1369237302cce97`)
+
+data= await res.json()
+appendsearchnews(data.articles)
+
+
+
+
+
+
+}
+
+
+
+var searchboxresult=document.getElementById("searchResultBox")
+
+ function appendsearchnews(newses){
+
+    searchboxresult.innerHTML=null;
+    newses.forEach(news => {
+
+
+  let p=document.createElement('p')
+  p.innerHTML=news.title
+  p.style.cursor='pointer'
+  p.onclick=function (){
+            showsearchhtml(news)
+        }
+
+        searchboxresult.append(p)
+
+  
+
+  
+});
+
+ 
+
+}
+
+
+function showsearchhtml(news) {
+
+localStorage.setItem('s_r_n',JSON.stringify(news))
+
+ window.location.href='search.html'
+
+
+}
+
+
+
+
+
+
+// search api
+
+// https://newsapi.org/v2/everything?q=bitcoin&apiKey=957fbaf97c284441a1369237302cce97
+
+function appearbox(){
+
+document.getElementById("searchResultBox").style.display="block"
+
+
+
+}
+
+    </script>
+    
+</body>
+</html>
